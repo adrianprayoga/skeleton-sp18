@@ -55,7 +55,7 @@ public class NBody {
 		
 		
 
-        for (double time = 0.0; time <= T; time += dt) {
+        for (double time = 0.0; time < T; time += dt) {
             StdDraw.clear();
             StdDraw.picture(0, 0, "images/starfield.jpg");
 
