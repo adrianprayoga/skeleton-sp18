@@ -44,10 +44,6 @@ public class NBody {
         double radius = readRadius(filename);
         Planet[] planets = readPlanets(filename);
 
-
-        System.out.println("Input - T: " + T + ", dt: " + dt);
-
-
         // double time = 0.0;
 
         StdDraw.enableDoubleBuffering();
