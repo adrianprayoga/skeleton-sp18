@@ -33,6 +33,7 @@ public class StdDrawDemo {
 
 	/* Draws random copies of the image, clearing in between
 	 * drawings. */
+	@Deprecated
 	public static void drawRandom() {
 		int waitTimeMilliseconds = 100;
 
