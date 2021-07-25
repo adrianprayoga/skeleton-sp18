@@ -1,5 +1,3 @@
-package proj1a;
-
 public class LinkedListDeque<T> {
 
     private Node sentinel;
@@ -120,5 +118,8 @@ public class LinkedListDeque<T> {
         }
 
         return getRecursive(index, sentinel.next);
+    }
+
+    public static void main(String[] args) {
     }
 }
