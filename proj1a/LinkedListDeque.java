@@ -24,13 +24,13 @@ public class LinkedListDeque<T> {
         size = 0;
     }
 
-    public void addFirst (T item) {
+    public void addFirst(T item) {
         size += 1;
         sentinel.next = new Node(item, sentinel.next, sentinel);
         sentinel.next.next.prev = sentinel.next;
     }
 
-    public void addLast (T item) {
+    public void addLast(T item) {
         size += 1;
         sentinel.prev = new Node(item, sentinel, sentinel.prev);
         sentinel.prev.prev.next = sentinel.prev;
@@ -53,7 +53,7 @@ public class LinkedListDeque<T> {
         Node first = sentinel.next;
 
         for (int i = 0; i < size(); i++) {
-            System.out.print(first.item+" ");
+            System.out.print(first.item + " ");
             first = first.next;
         }
 
@@ -61,7 +61,9 @@ public class LinkedListDeque<T> {
     }
 
     public T removeFirst() {
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
 
         size -= 1;
         T item = sentinel.next.item;
@@ -72,7 +74,9 @@ public class LinkedListDeque<T> {
     }
 
     public T removeLast() {
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
 
         size -= 1;
         T item = sentinel.prev.item;
@@ -103,7 +107,9 @@ public class LinkedListDeque<T> {
     }
 
     private T getRecursive(int index, Node node) {
-        if (index == 0) return node.item;
+        if (index == 0) {
+            return node.item;
+        }
 
         return getRecursive(index - 1, node.next);
     }
