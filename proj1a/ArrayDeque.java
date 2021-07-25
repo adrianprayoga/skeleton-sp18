@@ -37,6 +37,25 @@ public class ArrayDeque<T> {
     
   }
 
+  private void downsize(int newCapacity) {
+    System.out.println("Resizing to new capacity " + newCapacity);
+
+    T[] oldRef = items;
+    int oldSize = size;
+    int oldNextFirst = nextFirst;
+    items = (T[]) new Object[newCapacity];
+
+    size = 0;
+    nextFirst = 0;
+    nextLast = 1;
+
+    for(int i = 0; i < oldSize; i++) {
+      addLast(oldRef[(oldNextFirst + 1 + i) % capacity]);
+    }
+
+    capacity = newCapacity;
+  }
+
   public void addFirst(T item) {
     if(capacity == size) {
       resize(capacity * rFactor);
@@ -83,9 +102,9 @@ public class ArrayDeque<T> {
   public T removeFirst() {
     T item = get(0);
 
-    // if ((size - 1) * ratio < capacity) {
-    //   resize(capacity/2);
-    // }
+    if ((size - 1) * ratio < capacity) {
+      downsize(capacity/2);
+    }
 
     items[(nextFirst + 1) % capacity] = null;
     nextFirst = (nextFirst + 1) % capacity;
@@ -96,9 +115,9 @@ public class ArrayDeque<T> {
   public T removeLast() {
     T item = get(size - 1);
 
-    // if ((size - 1) * ratio < capacity) {
-    //   resize(capacity/2);
-    // }
+    if ((size - 1) * ratio < capacity) {
+      downsize(capacity/2);
+    }
 
     items[mod(nextLast - 1, capacity)] = null;
     nextLast = mod(nextLast - 1, capacity);
