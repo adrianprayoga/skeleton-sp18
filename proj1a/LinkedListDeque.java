@@ -119,7 +119,4 @@ public class LinkedListDeque<T> {
 
         return getRecursive(index, sentinel.next);
     }
-
-    public static void main(String[] args) {
-    }
 }
