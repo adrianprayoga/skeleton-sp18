@@ -100,9 +100,11 @@ public class ArrayDeque<T> {
   }
 
   public T removeFirst() {
+    if (size == 0) return null;
+    
     T item = get(0);
 
-    if ((size - 1) * ratio < capacity) {
+    if ((size - 1) * ratio < capacity && capacity > 16) {
       downsize(capacity/2);
     }
 
@@ -113,9 +115,11 @@ public class ArrayDeque<T> {
   }
 
   public T removeLast() {
+    if (size == 0) return null;
+
     T item = get(size - 1);
 
-    if ((size - 1) * ratio < capacity) {
+    if ((size - 1) * ratio < capacity && capacity > 16) {
       downsize(capacity/2);
     }
 
