@@ -1,6 +1,7 @@
 package byog.Core;
 
 import java.util.List;
+import java.util.Random;
 
 public class Room {
     public Position corner1; // bottom left
@@ -45,6 +46,16 @@ public class Room {
 
     public boolean noOverlapInRoomList(List<Room> roomList) {
         return roomList.stream().noneMatch(r -> this.overlap(r) || r.overlap(this));
+    }
+
+    public Position pickRandomRightWallPosition (Random RANDOM) {
+        int x = corner3.x + RandomUtils.uniform(RANDOM, 1);
+        int y = corner1.y + RandomUtils.uniform(RANDOM, height);
+        return new Position(corner3.x, y);
+    }
+    public Position pickRandomLeftWallPosition (Random RANDOM) {
+        int y = corner1.y + RandomUtils.uniform(RANDOM, height);
+        return new Position(corner1.x, y);
     }
 
     public String toString() {
