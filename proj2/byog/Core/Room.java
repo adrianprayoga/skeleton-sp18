@@ -58,6 +58,15 @@ public class Room {
         return new Position(corner1.x, y);
     }
 
+    public Position pickRandomTopWallPosition (Random RANDOM) {
+        int x = corner1.x + RandomUtils.uniform(RANDOM, width);
+        return new Position(x, corner3.y);
+    }
+    public Position pickRandomBottomWallPosition (Random RANDOM) {
+        int x = corner1.x + RandomUtils.uniform(RANDOM, width);
+        return new Position(x, corner1.y);
+    }
+
     public String toString() {
         return "corners "
                 + corner1.toString() + " "
