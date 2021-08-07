@@ -8,8 +8,11 @@ public class MapGeneratorTest {
     public static final int HEIGHT = 30;
 
     public static void main(String[] args) {
-        MapGenerator mapGenerator = new MapGenerator(WIDTH, HEIGHT, 123123);
-        TETile[][] map = mapGenerator.generateMap();
+
+        Input stringInput = new Input("N1223WWWDW:Q");
+        GameWorld gameWorld = new GameWorld(WIDTH, HEIGHT, stringInput.seed);
+        gameWorld.movePlayer(stringInput.actionSequence);
+        TETile[][] map = gameWorld.getMap();
 
         System.out.println(TETile.toString(map));
 

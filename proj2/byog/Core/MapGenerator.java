@@ -21,6 +21,14 @@ public class MapGenerator {
         this.RANDOM = new Random(seed);
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     private void addBackground(TETile[][] tiles, int width, int height) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -267,9 +275,6 @@ public class MapGenerator {
     }
 
     private boolean isPositionValid(int x, int y) {
-        return x >= 0
-                && x < width
-                && y >= 0
-                && y < height;
+        return Position.isPositionValid(new Position(x, y), width, height);
     }
 }
