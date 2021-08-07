@@ -8,7 +8,7 @@ public class MapGeneratorTest {
     public static final int HEIGHT = 30;
 
     public static void main(String[] args) {
-        MapGenerator mapGenerator = new MapGenerator(WIDTH, HEIGHT);
+        MapGenerator mapGenerator = new MapGenerator(WIDTH, HEIGHT, 123123);
         TETile[][] map = mapGenerator.generateMap();
 
         System.out.println(TETile.toString(map));

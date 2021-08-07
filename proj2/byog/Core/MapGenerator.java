@@ -12,12 +12,13 @@ public class MapGenerator {
     private static int MaxNumberOfRooms = 50;
     private static int RoomSizeVariation = 10;
     private static int MinRoomSize = 2;
-    private static Random RANDOM = new Random(123);
+    private Random RANDOM;
     private int width, height;
 
-    public MapGenerator(int width, int height) {
+    public MapGenerator(int width, int height, long seed) {
         this.width = width;
         this.height = height;
+        this.RANDOM = new Random(seed);
     }
 
     private void addBackground(TETile[][] tiles, int width, int height) {
@@ -255,8 +256,6 @@ public class MapGenerator {
 //                generateRandomVerticalHallway(map, room, -1);
 //            }
         }
-
-        System.out.println(roomList.size()+" rooms created.");
         return map;
     }
 }

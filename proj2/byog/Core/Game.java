@@ -32,7 +32,36 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
 
-        TETile[][] finalWorldFrame = null;
-        return finalWorldFrame;
+        String upperCaseInput = input.toUpperCase();
+        if (upperCaseInput.startsWith("N")) {
+            MapGenerator mapGenerator = new MapGenerator(WIDTH, HEIGHT, getSeed(input));
+            TETile[][] finalWorldFrame = mapGenerator.generateMap();
+            return finalWorldFrame;
+        } else if (upperCaseInput.startsWith("L")) {
+            // TODO: LOAD
+            return null;
+        } else {
+            return null;
+        }
+
+
+
+    }
+
+    private long getSeed(String inputString) {
+        String seed = "";
+
+        for (int i = 1; i < inputString.length(); i++) {
+            char inputChar = inputString.charAt(i);
+            if (Character.isDigit(inputChar)) {
+                seed += inputChar;
+            } else {
+                break;
+            }
+
+        }
+
+        return Long.valueOf(seed);
+
     }
 }
