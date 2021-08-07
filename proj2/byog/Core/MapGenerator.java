@@ -46,32 +46,36 @@ public class MapGenerator {
         int y = position.y;
 
         if(MapAnalyzer.isHorizontalUnitWall(map, position)) {
-            if (y+dir < height && y+dir >= 0 && map[x+1][y+dir].equals(Tileset.FLOOR)) {
+            if (isPositionValid(x+1, y+dir) && map[x+1][y+dir].equals(Tileset.FLOOR)) {
                 map[x+1][y] = Tileset.FLOOR;
             }
             return true;
         } else if (MapAnalyzer.isHorizontalHalfWallRight(map, position)) {
             createOneUnitHallwayV(map, new Position(x, y), "LEFT");
             createOneUnitHallwayV(map, new Position(x, y+1*dir), "LEFT");
-//            map[x][y+2*dir] = Tileset.WALL;
+            if (isPositionValid(x, y+2*dir)) {
+                map[x][y+2*dir] = Tileset.WALL;
+            }
+
             return true;
         } else if (MapAnalyzer.isHorizontalHalfWallLeft(map, position)) {
             createOneUnitHallwayV(map, new Position(x, y), "RIGHT");
             createOneUnitHallwayV(map, new Position(x, y+1*dir), "RIGHT");
-//            map[x+2][y+2*dir] = Tileset.WALL;
+            if (isPositionValid(x+2, y+2*dir)) {
+                map[x+2][y+2*dir] = Tileset.WALL;
+            }
             return true;
         } else if (MapAnalyzer.isHorizontalHallway(map, position)) {
             return true;
         } else {
             createOneUnitHallwayV(map, new Position(x, y), "FULL");
 
-            if (x + 4 < height && map[position.x+4][position.y].equals(Tileset.FLOOR)
-            ) {
+            if (isPositionValid(x+4, y) && map[position.x+4][position.y].equals(Tileset.FLOOR)) {
                 map[position.x+2][position.y] = Tileset.FLOOR;
                 map[position.x+3][position.y] = Tileset.FLOOR;
             }
 
-            if (x - 2 > 0 && map[position.x-2][position.y].equals(Tileset.FLOOR)) {
+            if (isPositionValid(x-2, y) && map[position.x-2][position.y].equals(Tileset.FLOOR)) {
                 map[position.x][position.y] = Tileset.FLOOR;
                 map[position.x-1][position.y] = Tileset.FLOOR;
             }
@@ -84,7 +88,7 @@ public class MapGenerator {
         int y = position.y;
 
         if(MapAnalyzer.isVerticalUnitWall(map, position)) {
-            if (x+dir < width && x+dir >= 0 && map[x+dir][y+1].equals(Tileset.FLOOR)) {
+            if (isPositionValid(x+dir, y+1) && map[x+dir][y+1].equals(Tileset.FLOOR)) {
                 map[x][y+1] = Tileset.FLOOR;
             }
             //TODO: Marked rooms as connected
@@ -92,26 +96,29 @@ public class MapGenerator {
         } else if (MapAnalyzer.isVerticalHalfWallTop(map, position)) {
             createOneUnitHallwayH(map, new Position(x, y), "BOTTOM");
             createOneUnitHallwayH(map, new Position(x+1*dir, y), "BOTTOM");
-            map[x+2*dir][y] = Tileset.WALL;
+            if(isPositionValid(x+2*dir, y)) {
+                map[x+2*dir][y] = Tileset.WALL;
+            }
             //TODO: Marked rooms as connected
             return true;
         } else if (MapAnalyzer.isVerticalHalfWallBottom(map, position)) {
             createOneUnitHallwayH(map, new Position(x, y), "TOP");
             createOneUnitHallwayH(map, new Position(x+1*dir, y), "TOP");
-            map[x+2*dir][y+2] = Tileset.WALL;
+            if(isPositionValid(x+2*dir, y+2)) {
+                map[x+2*dir][y+2] = Tileset.WALL;
+            }
             return true;
         } else if (MapAnalyzer.isVerticalHallway(map, position)) {
             return true;
         } else {
              createOneUnitHallwayH(map, new Position(x, y), "FULL");
 
-            if (y + 4 < height && map[position.x][position.y+4].equals(Tileset.FLOOR)
-            ) {
+            if (isPositionValid(x, y+4) && map[position.x][position.y+4].equals(Tileset.FLOOR)) {
                 map[position.x][position.y+2] = Tileset.FLOOR;
                 map[position.x][position.y+3] = Tileset.FLOOR;
             }
 
-            if (y - 2 > 0 && map[position.x][position.y-2].equals(Tileset.FLOOR)) {
+            if (isPositionValid(x, y-2) && map[position.x][position.y-2].equals(Tileset.FLOOR)) {
                 map[position.x][position.y] = Tileset.FLOOR;
                 map[position.x][position.y-1] = Tileset.FLOOR;
             }
@@ -120,7 +127,7 @@ public class MapGenerator {
     }
 
     private void createOneUnitHallwayH(TETile[][] map, Position position, String type) {
-        if(position.x < 0 || position.y >= width) return;
+        if(!isPositionValid(position.x, position.y)) return;
 
         if (type == "TOP") {
             map[position.x][position.y+1] = Tileset.FLOOR;
@@ -136,7 +143,7 @@ public class MapGenerator {
     }
 
     private void createOneUnitHallwayV(TETile[][] map, Position position, String type) {
-        if(position.y < 0 || position.y >= height) return;
+        if(!isPositionValid(position.x, position.y)) return;
 
         if (type == "RIGHT") {
             map[position.x+1][position.y] = Tileset.FLOOR;
@@ -257,5 +264,12 @@ public class MapGenerator {
 //            }
         }
         return map;
+    }
+
+    private boolean isPositionValid(int x, int y) {
+        return x >= 0
+                && x < width
+                && y >= 0
+                && y < height;
     }
 }
