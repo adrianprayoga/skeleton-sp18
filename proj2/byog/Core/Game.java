@@ -22,16 +22,19 @@ public class Game {
      */
     public void playWithKeyboard() {
         StdDraw.enableDoubleBuffering();
-        drawMainPage();
 
-
-        GameWorld gameWorld = mainPageOperations();
-        if (gameWorld == null) {
-            String seed = seedPageOperations();
-            gameOperations(seed, null);
-        } else {
-            gameOperations(null, gameWorld);
+        while (true) {
+            StdDraw.setCanvasSize();
+            drawMainPage();
+            GameWorld gameWorld = mainPageOperations();
+            if (gameWorld == null) {
+                String seed = seedPageOperations();
+                gameOperations(seed, null);
+            } else {
+                gameOperations(null, gameWorld);
+            }
         }
+
 
     }
 
@@ -179,18 +182,16 @@ public class Game {
         boolean exitInitiated = false;
 
         outer: while (true) {
-            drawMap(ter, gameWorld);
-
             boolean gameComplete = gameWorld.playerHealth <= 0 || gameWorld.isCompleted;
+
+            if (!gameComplete) {
+                drawMap(ter, gameWorld);
+            }
 
             if (gameWorld.playerHealth <= 0) {
                 showOverlayMessage("GAME OVER! NO MORE LIFE");
-                StdDraw.pause(10000);
-                break outer;
             } else if (gameWorld.isCompleted) {
                 showOverlayMessage("YOU WON!");
-                StdDraw.pause(10000);
-                break outer;
             }
 
             if (StdDraw.hasNextKeyTyped()) {
@@ -202,6 +203,8 @@ public class Game {
                 } else if (exitInitiated && (c == 'Q' || c == 'q')) {
                     GameWorld.saveWorld(gameWorld);
                     System.exit(0);
+                } else if (c == 'M' || c == 'm') {
+                    break outer;
                 }
 
                 exitInitiated = false;
