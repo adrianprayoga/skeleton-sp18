@@ -98,6 +98,14 @@ public class Game {
         StdDraw.show();
     }
 
+    private static void showOverlayMessage(String message) {
+        StdDraw.setPenColor(StdDraw.WHITE);
+        StdDraw.filledRectangle(WIDTH/2 + 1, HEIGHT/2 + 4, 15, 5);
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.text(WIDTH/2 + 1, HEIGHT/2 + 4, message);
+        StdDraw.show();
+    }
+
     private GameWorld mainPageOperations() {
         outer: while (true) {
             if (StdDraw.hasNextKeyTyped()) {
@@ -157,7 +165,7 @@ public class Game {
         return seed;
     }
 
-    private String gameOperations(String seed, GameWorld loadedData) {
+    private void gameOperations(String seed, GameWorld loadedData) {
 
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH + 4, HEIGHT + 8, 2, 4);
@@ -172,6 +180,18 @@ public class Game {
 
         outer: while (true) {
             drawMap(ter, gameWorld);
+
+            boolean gameComplete = gameWorld.playerHealth <= 0 || gameWorld.isCompleted;
+
+            if (gameWorld.playerHealth <= 0) {
+                showOverlayMessage("GAME OVER! NO MORE LIFE");
+                StdDraw.pause(10000);
+                break outer;
+            } else if (gameWorld.isCompleted) {
+                showOverlayMessage("YOU WON!");
+                StdDraw.pause(10000);
+                break outer;
+            }
 
             if (StdDraw.hasNextKeyTyped()) {
                 char c = StdDraw.nextKeyTyped();
