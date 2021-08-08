@@ -68,5 +68,28 @@ public class ArrayRingBuffer<T>  extends AbstractBoundedQueue<T> {
         return rb;
     }
 
-    // TODO: When you get to part 5, implement the needed code to support iteration.
+    @Override
+    public Iterator<T> iterator() {
+        return new KeyIterator();
+    }
+
+    public class KeyIterator implements Iterator<T> {
+        private int ptr;
+        private int count;
+        public KeyIterator() {
+            ptr = first;
+            count = 0;
+        }
+        public boolean hasNext() {
+            return (count < fillCount());
+        }
+
+        public T next() {
+            T returnItem = rb[ptr];
+            ptr = (ptr+1) % capacity();
+            count++;
+            return returnItem;
+        }
+    }
+
 }

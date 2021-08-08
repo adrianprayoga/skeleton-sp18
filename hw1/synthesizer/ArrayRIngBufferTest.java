@@ -26,4 +26,19 @@ public class ArrayRIngBufferTest {
 
         assertEquals(a.dequeue(), 3);
     }
+
+    @Test
+    public void arrayIterableTest() {
+
+        ArrayRingBuffer a = new ArrayRingBuffer<Integer>(3);
+        a.enqueue(1);
+        a.enqueue(3);
+        a.enqueue(4);
+        a.dequeue();
+        a.enqueue(5);
+
+        for (Object item : a) {
+            System.out.println(item);
+        }
+    }
 }
