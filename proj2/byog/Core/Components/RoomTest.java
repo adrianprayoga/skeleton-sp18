@@ -1,4 +1,4 @@
-package byog.Core;
+package byog.Core.Components;
 
 import org.junit.Test;
 

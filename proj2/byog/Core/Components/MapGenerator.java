@@ -1,5 +1,6 @@
-package byog.Core;
+package byog.Core.Components;
 
+import byog.Core.RandomUtils;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 

@@ -1,6 +1,8 @@
-package byog.Core;
+package byog.Core.Components;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
     public int x, y;
     public Position(int x, int y) {
         this.x = x;

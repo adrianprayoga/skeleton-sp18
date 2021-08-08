@@ -1,4 +1,6 @@
-package byog.Core;
+package byog.Core.Components;
+
+import byog.Core.RandomUtils;
 
 import java.util.List;
 import java.util.Random;
