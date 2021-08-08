@@ -25,7 +25,7 @@ public class Input {
                     || inputChar == 'S' || inputChar == 'D') {
                 this.actionSequence += inputChar;
             } else if (inputChar == ':') {
-                if(i+i < inputString.length()
+                if(i+1 < inputString.length()
                         && inputString.charAt(i+1) == 'Q') {
                     this.quitAndSave = true;
                 }
@@ -33,6 +33,6 @@ public class Input {
             i++;
         }
 
-        this.seed = Long.valueOf(seed);
+        this.seed = !seed.equals("") ? Long.valueOf(seed) : 0;
     }
 }

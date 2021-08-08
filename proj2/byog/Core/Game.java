@@ -48,25 +48,31 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
-
-        System.out.println("input " + input);
-
+        
         String upperCaseInput = input.toUpperCase();
+        Input stringInput = new Input(upperCaseInput);
+        GameWorld gameWorld;
+
         if (upperCaseInput.startsWith("N")) {
-            Input stringInput = new Input(upperCaseInput);
-            GameWorld gameWorld = new GameWorld(WIDTH, HEIGHT, stringInput.seed);
-            gameWorld.movePlayer(stringInput.actionSequence);
-            TETile[][] finalWorldFrame = gameWorld.getMap();
-            return finalWorldFrame;
+            gameWorld = new GameWorld(WIDTH, HEIGHT, stringInput.seed);
+
         } else if (upperCaseInput.startsWith("L")) {
-            // TODO: LOAD
-            return null;
+            System.out.println("loading existing game");
+            gameWorld = GameWorld.loadWorld();
+            if (gameWorld == null) {
+                return null;
+            }
         } else {
             return null;
         }
+
+        gameWorld.movePlayer(stringInput.actionSequence);
+        if (stringInput.quitAndSave) {
+            GameWorld.saveWorld(gameWorld);
+        }
+        return gameWorld.getMap();
     }
 
     private static void drawMainPage() {
