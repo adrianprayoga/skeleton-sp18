@@ -65,6 +65,7 @@ public class ArrayRingBuffer<T>  extends AbstractBoundedQueue<T> {
     }
 
     public T[] getArray() {
+        // Only for testing
         return rb;
     }
 
@@ -73,7 +74,7 @@ public class ArrayRingBuffer<T>  extends AbstractBoundedQueue<T> {
         return new KeyIterator();
     }
 
-    public class KeyIterator implements Iterator<T> {
+    private class KeyIterator implements Iterator<T> {
         private int ptr;
         private int count;
         public KeyIterator() {
