@@ -125,6 +125,35 @@ public class TestMyHashMap {
         studentIDs.put("evil alan", 345);
         assertEquals(345, studentIDs.get("evil alan").intValue());
         assertEquals(studentIDs.get("evil alan"), studentIDs.get("alan"));
+        assertEquals(studentIDs.remove("evil alan"), (Integer) 345);
+
+        System.out.println(studentIDs.keySet());
+    }
+
+    @Test
+    public void testHashTableExpand() {
+        MyHashMap<String, String> dictionary = new MyHashMap<>();
+        assertEquals(0, dictionary.size());
+
+        // can put objects in dictionary and get them
+        dictionary.put("1", "world1");
+        dictionary.put("2", "world2");
+        dictionary.put("3", "world2");
+        dictionary.put("4", "world2");
+        dictionary.put("5", "world2");
+        dictionary.put("6", "world2");
+        dictionary.put("7", "world2");
+        dictionary.put("8", "world2");
+        dictionary.put("9", "world2");
+        dictionary.put("10", "world2");
+        dictionary.put("11", "world2");
+        dictionary.put("12", "world2");
+
+        assertEquals(12, dictionary.size());
+
+        dictionary.put("13", "world2");
+
+        assertEquals(13, dictionary.size());
     }
 
     public static void main(String[] args) {
