@@ -45,7 +45,9 @@ public class Percolation {
             if (row == 0) {
                 dsSites.union(dsPosition, virtualTopNode);
                 dsSites2.union(dsPosition, virtualTopNode);
-            } else if (row == N-1) {
+            }
+
+            if (row == N-1) {
                 dsSites.union(dsPosition, virtualBottomNode);
             }
         }
