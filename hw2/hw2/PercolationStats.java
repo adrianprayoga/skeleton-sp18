@@ -30,6 +30,28 @@ public class PercolationStats {
         }
     }
 
+    public PercolationStats(int N, int T, PercolationFactory pf, boolean qf) {
+        if (N <= 0 || T <= 0) {
+            throw new IllegalArgumentException("N & T cannot be <= 0");
+        }
+
+        this.T = T;
+        pList = new double[T];
+
+        for(int i = 0; i < T; i++) {
+            PercolationQuickFindUF p = pf.makeQF(N);
+
+            while (!p.percolates()) {
+                int x = StdRandom.uniform(N);
+                int y = StdRandom.uniform(N);
+
+                p.open(x, y);
+            }
+
+            pList[i] = Double.valueOf(p.numberOfOpenSites()) / (N*N);
+        }
+    }
+
     // sample mean of percolation threshold
     public double mean() {
         return StdStats.mean(pList);
