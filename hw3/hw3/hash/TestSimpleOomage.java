@@ -30,11 +30,36 @@ public class TestSimpleOomage {
         SimpleOomage oo3 = new SimpleOomage(10, 20, 5);
         SimpleOomage oo4 = new SimpleOomage(5, 15, 15);
 
+        SimpleOomage oo6 = new SimpleOomage(0, 5, 0);
+        SimpleOomage oo7 = new SimpleOomage(0, 0, 155);
+        SimpleOomage oo8 = new SimpleOomage(5, 0, 0);
+        SimpleOomage oo9 = new SimpleOomage(0, 155, 0);
+
+
         assertEquals(oo1.hashCode(), oo2.hashCode());
         assertNotEquals(oo1.hashCode(), oo3.hashCode());
         assertNotEquals(oo1.hashCode(), oo4.hashCode());
+        assertNotEquals(oo6.hashCode(), oo7.hashCode());
+        assertNotEquals(oo8.hashCode(), oo9.hashCode());
 
-
+//        List<SimpleOomage> ls = new ArrayList<>();
+//        for (int x = 0; x <= 255; x += 5) {
+//            for (int y = 0; y <= 255; y += 5) {
+//                for (int z = 0; z <= 255; z += 5) {
+//                    ls.add(new SimpleOomage(x, y, z));
+//                }
+//            }
+//        }
+//
+//        for (int i = 0; i < ls.size(); i++) {
+//            for (int j = i+1; j < ls.size(); j++) {
+//                if (ls.get(i).equals(ls.get(j))) {
+//                    assertEquals(ls.get(i), ls.get(j));
+//                } else {
+//                    assertNotEquals(ls.get(i), ls.get(j));
+//                }
+//            }
+//        }
 
     }
 

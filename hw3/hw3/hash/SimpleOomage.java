@@ -29,9 +29,12 @@ public class SimpleOomage implements Oomage {
         if (!USE_PERFECT_HASH) {
             return red + green + blue;
         } else {
-            return red / 5 * (int) Math.pow(31.0, 2.0)
-                    + green / 5 * 31
-                    + blue / 5;
+            int hash = 1;
+            hash = hash * 31 + red / 5;
+            hash = hash * 31 + green / 5;
+            hash = hash * 31 + blue / 5;
+            hash = hash + (red * 2 + green + blue) / 5;
+            return hash;
         }
     }
 
