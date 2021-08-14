@@ -13,8 +13,6 @@ public class PercolationStats {
             throw new IllegalArgumentException("N & T cannot be <= 0");
         }
 
-        StdRandom.setSeed(1);
-
         this.T = T;
         pList = new double[T];
 
@@ -50,6 +48,13 @@ public class PercolationStats {
     // high endpoint of 95% confidence interval
     public double confidenceHigh() {
         return mean() + 1.96 * stddev() / Math.sqrt(T);
+    }
+
+    public static void main(String[] args) {
+        PercolationStats ps = new PercolationStats(100, 100, new PercolationFactory());
+        System.out.println(ps.mean());
+        System.out.println(ps.stddev());
+        System.out.println(ps.confidenceHigh());
     }
 
 }

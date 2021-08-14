@@ -6,6 +6,7 @@ public class Percolation {
     // create N-by-N grid, with all sites initially blocked
     private boolean[][] sites;
     private WeightedQuickUnionUF dsSites;
+    private WeightedQuickUnionUF dsSites2;
     private int numberOfOpenSites;
     private int N;
     private int virtualTopNode;
@@ -19,6 +20,7 @@ public class Percolation {
         this.N = N;
         this.sites = new boolean[N][N];
         this.dsSites = new WeightedQuickUnionUF(N*N + 2);
+        this.dsSites2 = new WeightedQuickUnionUF(N*N + 1);
         this.virtualTopNode = N*N;
         this.virtualBottomNode = N*N+1;
         this.numberOfOpenSites = 0;
@@ -42,6 +44,7 @@ public class Percolation {
 
             if (row == 0) {
                 dsSites.union(dsPosition, virtualTopNode);
+                dsSites2.union(dsPosition, virtualTopNode);
             } else if (row == N-1) {
                 dsSites.union(dsPosition, virtualBottomNode);
             }
@@ -52,6 +55,7 @@ public class Percolation {
        try {
            if(isOpen(row, col)) {
                dsSites.union(dsPosition, getPositionNumber(row, col));
+               dsSites2.union(dsPosition, getPositionNumber(row, col));
            }
        } catch (IndexOutOfBoundsException e) {
            return;
@@ -67,7 +71,7 @@ public class Percolation {
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
         validateIndex(row, col);
-        return dsSites.connected(getPositionNumber(row, col), virtualTopNode);
+        return dsSites2.connected(getPositionNumber(row, col), virtualTopNode);
     }
 
     // number of open sites
