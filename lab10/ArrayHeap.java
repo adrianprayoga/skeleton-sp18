@@ -153,10 +153,6 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (size + 1 == contents.length) {
             resize(contents.length * 2);
         }
-
-        // 0 1 2 3
-        // - 1 2   ; size = 2
-
         size += 1;
         contents[size] = new Node(item, priority);
         swim(size);
@@ -186,9 +182,8 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
 
         contents[1] = contents[size];
         contents[size] = null;
-        size -= 1;
-
         sink(1);
+        size -= 1;
         return temp;
     }
 
@@ -276,7 +271,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             throw new IllegalArgumentException("Cannot sink or swim nodes with index 0 or less");
         }
         if (index > size) {
-            throw new IllegalArgumentException("Cannot sink or swim nodes with index greater than current size.");
+            throw new IllegalArgumentException("Cannot sink or swim nodes with index greater than current size. i: " +index+" s: "+size);
         }
         if (contents[index] == null) {
             throw new IllegalArgumentException("Cannot sink or swim a null node.");
