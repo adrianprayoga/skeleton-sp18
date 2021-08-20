@@ -47,65 +47,28 @@ public class Board implements WorldState{
         return N;
     }
 
-//    @Override
-//    public Iterable<WorldState> neighbors() {
-//        ArrayList<WorldState> ls = new ArrayList<>();
-//        int[] iter = {-1, 1};
-//
-//        for (int i : iter) {
-//            int newX = emptyLocationX + i;
-//            int newY = emptyLocationY + 0;
-//            if (isValid(newX) && isValid(newY)) {
-//                ls.add(new Board(getNewBoardPosition(newX, newY)));
-//            }
-//        }
-//
-//        for (int i : iter) {
-//            int newX = emptyLocationX + 0;
-//            int newY = emptyLocationY + i;
-//            if (isValid(newX) && isValid(newY)) {
-//                ls.add(new Board(getNewBoardPosition(newX, newY)));
-//            }
-//        }
-//
-//        return ls;
-//    }
-
     @Override
     public Iterable<WorldState> neighbors() {
-        int BLANK = 0;
+        ArrayList<WorldState> ls = new ArrayList<>();
+        int[] iter = {-1, 1};
 
-        Queue<WorldState> neighbors = new Queue<>();
-        int hug = size();
-        int bug = -1;
-        int zug = -1;
-        for (int rug = 0; rug < hug; rug++) {
-            for (int tug = 0; tug < hug; tug++) {
-                if (tileAt(rug, tug) == BLANK) {
-                    bug = rug;
-                    zug = tug;
-                }
+        for (int i : iter) {
+            int newX = emptyLocationX + i;
+            int newY = emptyLocationY + 0;
+            if (isValid(newX) && isValid(newY)) {
+                ls.add(new Board(getNewBoardPosition(newX, newY)));
             }
         }
-        int[][] ili1li1 = new int[hug][hug];
-        for (int pug = 0; pug < hug; pug++) {
-            for (int yug = 0; yug < hug; yug++) {
-                ili1li1[pug][yug] = tileAt(pug, yug);
+
+        for (int i : iter) {
+            int newX = emptyLocationX + 0;
+            int newY = emptyLocationY + i;
+            if (isValid(newX) && isValid(newY)) {
+                ls.add(new Board(getNewBoardPosition(newX, newY)));
             }
         }
-        for (int l11il = 0; l11il < hug; l11il++) {
-            for (int lil1il1 = 0; lil1il1 < hug; lil1il1++) {
-                if (Math.abs(-bug + l11il) + Math.abs(lil1il1 - zug) - 1 == 0) {
-                    ili1li1[bug][zug] = ili1li1[l11il][lil1il1];
-                    ili1li1[l11il][lil1il1] = BLANK;
-                    Board neighbor = new Board(ili1li1);
-                    neighbors.enqueue(neighbor);
-                    ili1li1[l11il][lil1il1] = ili1li1[bug][zug];
-                    ili1li1[bug][zug] = BLANK;
-                }
-            }
-        }
-        return neighbors;
+
+        return ls;
     }
 
     private int[][] getNewBoardPosition (int newX, int newY) {

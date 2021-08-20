@@ -1,7 +1,6 @@
 package hw4.puzzle;
 
 import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.StdOut;
 
 import java.util.*;
 
@@ -9,7 +8,7 @@ public class Solver{
     private MinPQ priorityQ;
     private SearchNode initialNode;
     private int numberOfMoves;
-    private List<WorldState> solution;
+    private Deque<WorldState> solution;
     public int numOfEnqueue = 0;
     private boolean FULL_OPTIMIZATION = false;
     private Set<WorldState> completedNodes = new HashSet<>();
@@ -47,7 +46,7 @@ public class Solver{
     public Solver(WorldState initial) {
         this.initialNode = new SearchNode(initial, 0, null);
         this.priorityQ = new MinPQ(8, new SearchNodeComparator());
-        this.solution = new ArrayList<>();
+        this.solution = new ArrayDeque<>();
 
         priorityQ.insert(this.initialNode);
         iterateSolver();
@@ -85,7 +84,7 @@ public class Solver{
     private void getSolution(SearchNode finalNode) {
         SearchNode currentNode = finalNode;
         while(currentNode != null) {
-            this.solution.add(currentNode.ws);
+            this.solution.addFirst(currentNode.ws);
             currentNode = currentNode.prevNode;
         }
     }

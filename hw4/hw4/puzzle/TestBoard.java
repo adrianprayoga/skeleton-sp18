@@ -51,20 +51,20 @@ public class TestBoard {
 
     }
 
-    @Test
-    public void testSimpleBoard() {
-        int i = 50;
-        String pnum = String.format("%02d", i);
-//        String puzzleName = "input/puzzle3x3-" + pnum + ".txt";
-        String puzzleName = "input/puzzle50.txt";
-        Board b = TestSolver.readBoard(puzzleName);
-
-        System.out.println(b);
-
-        int numMoves = i;
-        TestSolver.BoardPuzzleSolution bps = new TestSolver.BoardPuzzleSolution(puzzleName, b, numMoves);
-        Solver s = new Solver(b);
-        System.out.println("moves "+s.moves());
-        assertEquals("Wrong number of moves on " + puzzleName, bps.numMoves, s.moves());
-    }
+//    @Test
+//    public void testSimpleBoard() {
+//        int i = 50;
+//        String pnum = String.format("%02d", i);
+////        String puzzleName = "input/puzzle3x3-" + pnum + ".txt";
+//        String puzzleName = "input/puzzle50.txt";
+//        Board b = TestSolver.readBoard(puzzleName);
+//
+//        System.out.println(b);
+//
+//        int numMoves = i;
+//        TestSolver.BoardPuzzleSolution bps = new TestSolver.BoardPuzzleSolution(puzzleName, b, numMoves);
+//        Solver s = new Solver(b);
+//        System.out.println("moves "+s.moves());
+//        assertEquals("Wrong number of moves on " + puzzleName, bps.numMoves, s.moves());
+//    }
 } 
