@@ -36,7 +36,7 @@ public class Solver{
         }
     }
 
-    public class SearchNodeComparator implements Comparator<SearchNode> {
+    private class SearchNodeComparator implements Comparator<SearchNode> {
         @Override
         public int compare(SearchNode firstNode, SearchNode secondNode) {
             return Integer.compare(firstNode.moves + firstNode.estimatedDistanceToGoal,
@@ -51,37 +51,34 @@ public class Solver{
 
         priorityQ.insert(this.initialNode);
         iterateSolver();
-
     }
 
     private void iterateSolver() {
-        SearchNode searchNode = (SearchNode) priorityQ.delMin();
-        if (FULL_OPTIMIZATION) {
-            completedNodes.add(searchNode.ws);
-        }
 
-        if (searchNode.ws.isGoal()) {
-            // Set the number of moves
-            this.numberOfMoves = searchNode.moves;
-
-            // Create a list of solution
-            getSolution(searchNode);
-
-            return;
-        } else {
-            int currentMove = searchNode.moves;
-            for (WorldState neighbor : searchNode.ws.neighbors()) {
-                if (!FULL_OPTIMIZATION && (searchNode.prevNode == null || !searchNode.prevNode.ws.equals(neighbor))) {
-                    priorityQ.insert(new SearchNode(neighbor, currentMove+1, searchNode));
-                    numOfEnqueue++;
-                } else if (FULL_OPTIMIZATION && !completedNodes.contains(neighbor)) {
-                    priorityQ.insert(new SearchNode(neighbor, currentMove+1, searchNode));
-                    numOfEnqueue++;
-                }
-
-//                System.out.println("Size PQ "+ priorityQ.size());
+        while(!priorityQ.isEmpty()) {
+            SearchNode searchNode = (SearchNode) priorityQ.delMin();
+            if (FULL_OPTIMIZATION) {
+                completedNodes.add(searchNode.ws);
             }
-            iterateSolver();
+
+            if (searchNode.ws.isGoal()) {
+                // Set the number of moves
+                this.numberOfMoves = searchNode.moves;
+                // Create a list of solution
+                getSolution(searchNode);
+                return;
+            } else {
+                int currentMove = searchNode.moves;
+                for (WorldState neighbor : searchNode.ws.neighbors()) {
+                    if (FULL_OPTIMIZATION && !completedNodes.contains(neighbor)) {
+                        priorityQ.insert(new SearchNode(neighbor, currentMove+1, searchNode));
+                        numOfEnqueue++;
+                    } else if (!FULL_OPTIMIZATION && (searchNode.prevNode == null || !searchNode.prevNode.ws.equals(neighbor))) {
+                        priorityQ.insert(new SearchNode(neighbor, currentMove+1, searchNode));
+                        numOfEnqueue++;
+                    }
+                }
+            }
         }
     }
 
@@ -101,16 +98,16 @@ public class Solver{
         return this.solution;
     }
 
-    public static void main(String[] args) {
-        String start = "horse";
-        String goal = "nurse";
-
-        Word startState = new Word(start, goal);
-        Solver solver = new Solver(startState);
-
-        StdOut.println("Minimum number of moves = " + solver.moves());
-        for (WorldState ws : solver.solution()) {
-            StdOut.println(ws);
-        }
-    }
+//    public static void main(String[] args) {
+//        String start = "horse";
+//        String goal = "nurse";
+//
+//        Word startState = new Word(start, goal);
+//        Solver solver = new Solver(startState);
+//
+//        StdOut.println("Minimum number of moves = " + solver.moves());
+//        for (WorldState ws : solver.solution()) {
+//            StdOut.println(ws);
+//        }
+//    }
 }

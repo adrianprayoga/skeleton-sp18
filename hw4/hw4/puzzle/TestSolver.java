@@ -109,7 +109,6 @@ public class TestSolver {
     @Test(timeout = 40000)
     public void test3x3BoardPuzzles() {
         for (int i = 0; i <= 30; i += 1) {
-            System.out.println("testing i: "+ i);
             String pnum = String.format("%02d", i);
             String puzzleName = "input/puzzle3x3-" + pnum + ".txt";
             Board b = readBoard(puzzleName);

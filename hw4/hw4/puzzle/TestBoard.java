@@ -53,10 +53,10 @@ public class TestBoard {
 
     @Test
     public void testSimpleBoard() {
-        int i = 27;
+        int i = 50;
         String pnum = String.format("%02d", i);
-        String puzzleName = "input/puzzle3x3-" + pnum + ".txt";
-//        String puzzleName = "input/puzzle10.txt";
+//        String puzzleName = "input/puzzle3x3-" + pnum + ".txt";
+        String puzzleName = "input/puzzle50.txt";
         Board b = TestSolver.readBoard(puzzleName);
 
         System.out.println(b);
