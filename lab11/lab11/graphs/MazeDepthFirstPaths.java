@@ -9,8 +9,8 @@ public class MazeDepthFirstPaths extends MazeExplorer {
     public int[] edgeTo;
     public boolean[] marked;
     */
-    private int s;
-    private int t;
+    private int s; //Start
+    private int t; //
     private boolean targetFound = false;
     private Maze maze;
 
@@ -21,7 +21,7 @@ public class MazeDepthFirstPaths extends MazeExplorer {
         s = maze.xyTo1D(sourceX, sourceY);
         t = maze.xyTo1D(targetX, targetY);
         distTo[s] = 0;
-        edgeTo[s] = s;
+        edgeTo[s] = s; // Set edge to start from start
     }
 
     private void dfs(int v) {
