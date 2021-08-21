@@ -9,6 +9,8 @@ public class MazeCycles extends MazeExplorer {
     public int[] edgeTo;
     public boolean[] marked;
     */
+    private boolean cycleFound = false;
+    private int count = 0;
 
     public MazeCycles(Maze m) {
         super(m);
@@ -16,9 +18,34 @@ public class MazeCycles extends MazeExplorer {
 
     @Override
     public void solve() {
-        // TODO: Your code here!
+        cycleDetector(0, 0);
     }
 
-    // Helper methods go here
+    private void cycleDetector(int v, int parent) {
+        marked[v] = true;
+        announce();
+
+        for (int w : maze.adj(v)) {
+            if (marked[w]) {
+                if (w != parent) {
+                    cycleFound = true;
+                    edgeTo[w] = v;
+                    announce();
+
+                    return;
+                }
+            } else {
+                if (!cycleFound) {
+                    cycleDetector(w, v);
+                    if (count < 2) {
+                        edgeTo[w] = v;
+                        announce();
+                        count++;
+                    }
+
+                }
+            }
+        }
+    }
 }
 
