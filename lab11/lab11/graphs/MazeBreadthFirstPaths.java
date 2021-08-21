@@ -25,6 +25,7 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
         t = maze.xyTo1D(targetX, targetY);
         distTo[s] = 0;
         edgeTo[s] = s; // Set edge to start from start
+        marked[s] = true;
 
         fringe = new Queue<Integer>();
         fringe.enqueue(s);
@@ -59,6 +60,9 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
     @Override
     public void solve() {
          bfs();
+         System.out.println(distTo[0]);
+         System.out.println(edgeTo[0]);
+
     }
 }
 
