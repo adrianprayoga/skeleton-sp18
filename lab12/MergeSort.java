@@ -70,6 +70,8 @@ public class MergeSort {
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
 
+        if(items.isEmpty()) return items;
+
         Queue<Queue<Item>> singleQ = makeSingleItemQueues(items);
         while (singleQ.size() > 1) {
             singleQ.enqueue(mergeSortedQueues(singleQ.dequeue(), singleQ.dequeue()));
@@ -105,6 +107,9 @@ public class MergeSort {
         System.out.println(students);
         // Should be Alice Ethan Vanessa
         System.out.println(studentsSorted);
+
+        Queue<String> students2 = new Queue<>();
+        Queue<String> students2Sorted = MergeSort.mergeSort(students2);
     }
 
     public static void main(String[] args) {
