@@ -21,7 +21,7 @@ public class CountingSort {
         }
 
         // gather all the counts for each value
-        int[] counts = new int[max + 1];
+        int[] counts = new int[max + 1]; // length is max + 1 or else the max index is max - 1
         for (int i : arr) {
             counts[i]++;
         }
@@ -66,7 +66,45 @@ public class CountingSort {
      * @param arr int array that will be sorted
      */
     public static int[] betterCountingSort(int[] arr) {
-        // TODO make counting sort work with arrays containing negative numbers.
-        return null;
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+
+        for (int i : arr) {
+            max = max > i ? max : i;
+            min = min < i ? min : i;
+        }
+
+        int absMin = Math.abs(min);
+
+        // gather all the counts for each value
+        int[] counts = new int[absMin + max + 1]; // length is max + 1 or else the max index is max - 1
+        for (int i : arr) {
+            counts[absMin + i]++;
+        }
+
+        // Starting position for each 'index' e.g. [0, 1, 4] means index 1 starts at 1?
+        int[] starts = new int[absMin + max + 1];
+        int pos = 0;
+        for (int i = 0; i < starts.length; i += 1) {
+            starts[i] = pos;
+            pos += counts[i];
+        }
+
+        int[] sorted = new int[arr.length];
+
+        int cntIndex = 0;
+        int index = 0;
+        while(cntIndex > counts.length) {
+            if (counts[cntIndex] > 0) {
+                sorted[index] = cntIndex - absMin;
+                counts[cntIndex] -= 1;
+                index++;
+            } else {
+                cntIndex++;
+            }
+
+        }
+
+        return sorted;
     }
 }
