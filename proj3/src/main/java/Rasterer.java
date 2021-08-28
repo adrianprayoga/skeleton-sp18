@@ -1,5 +1,4 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class provides all code necessary to take a query box and produce
@@ -8,6 +7,7 @@ import java.util.Map;
  * not draw the output correctly.
  */
 public class Rasterer {
+    public static Integer FEET_PER_LON = 288200;
 
     public Rasterer() {
         // YOUR CODE HERE
@@ -42,11 +42,141 @@ public class Rasterer {
      *                    forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
+        System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+
+        // Basic Check
+
+        // TODO: change check below. Only set to false if box is totally outside our map
+//        if (params.get("ullon") < MapServer.ROOT_ULLON
+//                || params.get("lrlon") > MapServer.ROOT_LRLON
+//                || params.get("lrlat") < MapServer.ROOT_LRLAT
+//                || params.get("ullat") > MapServer.ROOT_ULLAT
+//        ) {
+//            System.out.println("Some issue with the lat/lon");
+//            results.put("query_success", false);
+//            return results;
+//        }
+
+//        if (params.get("ullon") < MapServer.ROOT_ULLON) {
+//            System.out.println("OOB ullon");
+//            params.put("ullon", MapServer.ROOT_ULLON);
+//        }
+//        if (params.get("lrlon") > MapServer.ROOT_LRLON) {
+//            System.out.println("OOB lrlon");
+//            params.put("lrlon", MapServer.ROOT_LRLON);
+//        }
+//        if (params.get("lrlat") < MapServer.ROOT_LRLAT) {
+//            System.out.println("OOB lrlat");
+//            params.put("lrlat", MapServer.ROOT_LRLAT);
+//        }
+//        if (params.get("ullat") > MapServer.ROOT_ULLAT) {
+//            System.out.println("OOB ullat");
+//            params.put("ullat", MapServer.ROOT_ULLAT);
+//        }
+
+        int depth = getDepth(params);
+
+        Double ullon = Math.max(params.get("ullon"), MapServer.ROOT_ULLON);
+        Double ullat = Math.min(params.get("ullat"), MapServer.ROOT_ULLAT);;
+        Double lrlon = Math.min(params.get("lrlon"), MapServer.ROOT_LRLON);;
+        Double lrlat = Math.max(params.get("lrlat"), MapServer.ROOT_LRLAT);;
+
+        int[] topLeftFile = getLocation(ullon, ullat, depth);
+        int[] bottomRightFile = getLocation(lrlon, lrlat, depth);
+
+        int numOfFilesX = bottomRightFile[0] - topLeftFile[0] + 1;
+        int numOfFilesY = bottomRightFile[1] - topLeftFile[1] + 1;
+
+        String[][] renderGrid = new String[numOfFilesY][numOfFilesX];
+        for(int x = 0; x < numOfFilesX; x++) {
+            for(int y = 0; y < numOfFilesY; y++) {
+                renderGrid[y][x] = "d" + depth
+                        + "_x" + (topLeftFile[0] + x)
+                        + "_y" + (topLeftFile[1] + y) + ".png";
+            }
+        }
+
+        Double LON_DIST = getLonDist(depth);
+        Double LAT_DIST = getLatDist(depth);
+
+        results.put("depth", depth); // depth of zoom
+        results.put("render_grid", renderGrid); // Grid
+        results.put("raster_ul_lon", MapServer.ROOT_ULLON + LON_DIST * topLeftFile[0]); // Upper Left longitude
+        results.put("raster_lr_lon", MapServer.ROOT_ULLON + LON_DIST * (bottomRightFile[0] + 1)); // Lower Right longitude
+        results.put("raster_ul_lat", MapServer.ROOT_ULLAT - LAT_DIST * topLeftFile[1]); // Upper Left Latitude
+        results.put("raster_lr_lat", MapServer.ROOT_ULLAT - LAT_DIST * (bottomRightFile[1] + 1)); // Lower Right Latitude
+        results.put("query_success", true);
+
+        // printGrid(renderGrid);
+        System.out.println(results);
+
+        // {raster_ul_lon=-122.2998046875, depth=1, raster_lr_lon=-122.2119140625, raster_lr_lat=37.82280243352756, , raster_ul_lat=37.892195547244356, query_success=true}
+        // render_grid=[[d1_x0_y0.png, d1_x1_y0.png], [d1_x0_y1.png, d1_x1_y1.png]]
+
         return results;
     }
+
+    private static int getDepth (Map<String, Double> params) {
+        Double lrlon = params.get("lrlon");
+        Double ullon = params.get("ullon");
+        Double w = params.get("w");
+
+        Double totalLong = MapServer.ROOT_LRLON - MapServer.ROOT_ULLON;
+        Double feetPerPixel = (lrlon - ullon) / w;
+
+        for (int d = 0; d <= 7; d++) {
+            if (totalLong / MapServer.TILE_SIZE / Math.pow(2, d) < feetPerPixel) {
+                return d;
+            }
+        }
+
+        return 7;
+    }
+
+    private static int[] getLocation(Double x, Double y, int depth) {
+        int[] fileLoc = new int[2];
+        final double eps = 1E-10;
+
+        Double LON_DIST = getLonDist(depth);
+        Double LAT_DIST = getLatDist(depth);
+
+        fileLoc[0] = (int) ((x - MapServer.ROOT_ULLON - eps) / LON_DIST);
+        fileLoc[1] = (int) ((MapServer.ROOT_ULLAT - y- eps) / LAT_DIST);
+
+        return fileLoc;
+    }
+
+    private static Double getLonDist(int depth) {
+        return (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / Math.pow(2, depth);
+    }
+
+    private static Double getLatDist(int depth) {
+        return (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / Math.pow(2, depth);
+    }
+
+    private static void printGrid(String[][] a) {
+        for (String[] b : a) {
+            for (String c : b) {
+                System.out.println(c);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Map<String, Double> a = new HashMap<>();
+        a.put("lrlon", -122.24053369025242);
+        a.put("ullon", -122.24163047377972);
+        a.put("w", 892.0);
+
+        System.out.println(getDepth(a));
+        System.out.println(getLocation(-122.24163047377972, 37.87655856892288, getDepth(a))[0]);
+        System.out.println(getLocation(-122.24163047377972, 37.87655856892288, getDepth(a))[1]);
+        System.out.println(getLocation(-122.24053369025242, 37.87548268822065, getDepth(a))[0]);
+        System.out.println(getLocation(-122.24053369025242, 37.87548268822065, getDepth(a))[1]);
+    }
+
+
 
 }
