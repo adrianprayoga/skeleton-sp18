@@ -283,11 +283,7 @@ public class MapServer {
      * cleaned <code>prefix</code>.
      */
     public static List<String> getLocationsByPrefix(String prefix) {
-        List<Long> ids = graph.locationNames.getWordsWithPrefix(prefix);
-        return ids.stream().map(locationId -> graph.locationNodes.get(locationId))
-                .filter(Objects::nonNull)
-                .map(node -> node.name)
-                .collect(Collectors.toList());
+        return graph.getLocationsByPrefix(prefix);
     }
 
     /**
@@ -303,19 +299,7 @@ public class MapServer {
      * "id" : Number, The id of the node. <br>
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
-        List<Long> ids = graph.locationNames.getWordsWithExactMatch(locationName.toLowerCase(Locale.ROOT));
-        return ids.stream().map(locationId -> graph.locationNodes.get(locationId))
-                .filter(Objects::nonNull)
-                .map(node -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("lat", node.lat);
-                    map.put("lon", node.lon);
-                    map.put("name", node.name);
-                    map.put("id", node.id);
-
-                    return map;
-                })
-                .collect(Collectors.toList());
+        return graph.getLocations(locationName);
     }
 
     /**

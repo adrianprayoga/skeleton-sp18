@@ -270,4 +270,29 @@ public class GraphDB {
         }
         return node.lat;
     }
+
+    List<String> getLocationsByPrefix(String prefix) {
+        List<Long> ids = locationNames.getWordsWithPrefix(prefix);
+        return ids.stream().map(locationId -> locationNodes.get(locationId))
+                .filter(Objects::nonNull)
+                .map(node -> node.name)
+                .collect(Collectors.toList());
+    }
+
+    List<Map<String, Object>> getLocations(String locationName) {
+        List<Long> ids = locationNames.getWordsWithExactMatch(locationName.toLowerCase(Locale.ROOT));
+        return ids.stream().map(locationId -> locationNodes.get(locationId))
+                .filter(Objects::nonNull)
+                .map(node -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("lat", node.lat);
+                    map.put("lon", node.lon);
+                    map.put("name", node.name);
+                    map.put("id", node.id);
+
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+
 }
