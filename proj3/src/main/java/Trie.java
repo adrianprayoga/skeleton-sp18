@@ -103,6 +103,29 @@ public class Trie {
         return locationIds;
     }
 
+    public List<Long> getWordsWithExactMatch (String word) {
+        char[] chars = word.toCharArray();
+
+        TrieNode pointer = head;
+        for(int i = 0; i < chars.length; i++) {
+            int loc = charToIntConverter(chars[i]);
+            if (loc >= 0) {
+                TrieNode child = pointer.links[loc];
+                if (child == null) {
+                    return new ArrayList<>();
+                }
+
+                if (i == chars.length - 1 && child.endOfWord) {
+                    return child.locationIds;
+                }
+
+                pointer = pointer.links[loc];
+            }
+        }
+
+        return new ArrayList<>();
+    }
+
     public List<Long> getAllWords () {
         List<Long> allWords = new ArrayList<>();
         getAllWordsFromTrieNode(allWords, head, "");

@@ -303,7 +303,19 @@ public class MapServer {
      * "id" : Number, The id of the node. <br>
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
-        return new LinkedList<>();
+        List<Long> ids = graph.locationNames.getWordsWithExactMatch(locationName.toLowerCase(Locale.ROOT));
+        return ids.stream().map(locationId -> graph.locationNodes.get(locationId))
+                .filter(Objects::nonNull)
+                .map(node -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("lat", node.lat);
+                    map.put("lon", node.lon);
+                    map.put("name", node.name);
+                    map.put("id", node.id);
+
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 
     /**
