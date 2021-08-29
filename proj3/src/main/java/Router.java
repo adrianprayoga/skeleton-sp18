@@ -12,7 +12,22 @@ import java.util.stream.Collectors;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+    public static class SearchNode {
+        private GraphDB.Node node;
+        private Double pqDistance;
 
+        public SearchNode(GraphDB.Node node, Double pqDistance) {
+            this.node = node;
+            this.pqDistance = pqDistance;
+        }
+    }
+
+    public static class SearchNodeComparator implements Comparator<SearchNode> {
+        @Override
+        public int compare(SearchNode firstNode, SearchNode secondNode) {
+            return Double.compare(firstNode.pqDistance, secondNode.pqDistance);
+        }
+    }
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -26,22 +41,6 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        class SearchNode {
-            private GraphDB.Node node;
-            private Double pqDistance;
-
-            public SearchNode(GraphDB.Node node, Double pqDistance) {
-                this.node = node;
-                this.pqDistance = pqDistance;
-            }
-        }
-
-        class SearchNodeComparator implements Comparator<SearchNode> {
-            @Override
-            public int compare(SearchNode firstNode, SearchNode secondNode) {
-                return Double.compare(firstNode.pqDistance, secondNode.pqDistance);
-            }
-        }
 
         // Logging for initial check
         System.out.println("stlon " + stlon + " stlat " + stlon + " destlon " + destlon + " destlat " + destlat);
@@ -108,7 +107,103 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+
+        List<NavigationDirection> directions = new ArrayList<>();
+
+        Long currentWay = null;
+        String currentWayName = "";
+        Double prevBearing = 0D;
+        NavigationDirection currentND = new NavigationDirection();
+
+        for(int i = 0; i < route.size() - 1; i++) {
+            Long n1Id = route.get(i);
+            Long n2Id = route.get(i+1);
+
+            GraphDB.Node n1 = g.getNode(n1Id);
+            GraphDB.Node n2 = g.getNode(n2Id);
+            Long edgeId = n1.edgeMapping.get(n2.id).get(0);
+            String edgeName = g.getEdge(edgeId).name;
+            Double bearing = g.bearing(n1Id, n2Id);
+            Double distance = g.distance(n1Id, n2Id);
+
+            if (currentWay == null) { // handle first
+                currentND.direction = NavigationDirection.START;
+                currentND.distance = distance;
+                currentND.way = edgeName;
+                currentWay = edgeId;
+                currentWayName = edgeName;
+                prevBearing = bearing;
+            } else if (currentWayName.equals(edgeName)) {
+                currentND.distance += distance;
+            } else {
+                directions.add(currentND);
+
+                currentND = new NavigationDirection();
+                currentND.direction = getDirection(unNormalizeBearing(normalizeBearing(bearing) - normalizeBearing(prevBearing)));
+                currentND.distance = distance;
+                currentND.way = g.getEdge(edgeId).name;
+
+                System.out.println("Name " + edgeName + " Bearing % " + bearing + " " + prevBearing
+                        + " " + unNormalizeBearing(normalizeBearing(bearing) - normalizeBearing(prevBearing)));
+
+                currentWay = edgeId;
+                currentWayName = edgeName;
+            }
+
+            prevBearing = bearing;
+            // Auto-add the last node
+            if (i == route.size() - 2) {
+                directions.add(currentND);
+            }
+        }
+
+        return directions;
+    }
+
+    private static Double normalizeBearing (Double bearing) {
+        if (bearing < 0) {
+            return 360 + bearing;
+        }
+        return bearing;
+    }
+
+    private static Double unNormalizeBearing (Double normalizedBearing) {
+
+        if (-180 < normalizedBearing && normalizedBearing < 0
+            || 0 < normalizedBearing && normalizedBearing < 180) {
+            return normalizedBearing;
+        } else if (180 < normalizedBearing && normalizedBearing < 360) {
+            return normalizedBearing - 360;
+        } else if (-360 < normalizedBearing && normalizedBearing < -180) {
+            return 360 + normalizedBearing;
+        }
+
+        return normalizedBearing;
+    }
+
+    private static int getDirection (Double bearing) {
+//        Between -15 and 15 degrees the direction should be “Continue straight”.
+//        Beyond -15 and 15 degrees but between -30 and 30 degrees the direction should be “Slight left/right”.
+//        Beyond -30 and 30 degrees but between -100 and 100 degrees the direction should be “Turn left/right”.
+//        Beyond -100 and 100 degrees the direction should be “Sharp left/right”.
+
+        if (-15 < bearing && bearing < 15) {
+            return NavigationDirection.STRAIGHT;
+        } else if (-30 < bearing && bearing < -15) {
+            return NavigationDirection.SLIGHT_LEFT;
+        } else if (15 < bearing && bearing < 30) {
+            return NavigationDirection.SLIGHT_RIGHT;
+        } else if (-100 < bearing && bearing < -30) {
+            return NavigationDirection.LEFT;
+        } else if (30 < bearing && bearing < 100) {
+            return NavigationDirection.RIGHT;
+        } else if (bearing < -100) {
+            return NavigationDirection.SHARP_LEFT;
+        } else if (bearing > 100) {
+            return NavigationDirection.SHARP_RIGHT;
+        }
+
+        return 0;
     }
 
 

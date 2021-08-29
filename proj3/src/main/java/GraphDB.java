@@ -65,7 +65,7 @@ public class GraphDB {
 
     static class Edge {
         public Long id;
-        public String name;
+        public String name = "";
 
         public Edge(Long id) {
             this.id = id;
@@ -232,6 +232,11 @@ public class GraphDB {
     Node getNode(Long id) {
         // assume id exists
         return nodes.get(id);
+    }
+
+    Edge getEdge(Long id) {
+        // assume id exists
+        return edges.get(id);
     }
 
     /**
