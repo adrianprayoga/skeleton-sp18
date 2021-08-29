@@ -47,33 +47,14 @@ public class Rasterer {
 
         // Basic Check
 
-        // TODO: change check below. Only set to false if box is totally outside our map
-//        if (params.get("ullon") < MapServer.ROOT_ULLON
-//                || params.get("lrlon") > MapServer.ROOT_LRLON
-//                || params.get("lrlat") < MapServer.ROOT_LRLAT
-//                || params.get("ullat") > MapServer.ROOT_ULLAT
-//        ) {
-//            System.out.println("Some issue with the lat/lon");
-//            results.put("query_success", false);
-//            return results;
-//        }
-
-//        if (params.get("ullon") < MapServer.ROOT_ULLON) {
-//            System.out.println("OOB ullon");
-//            params.put("ullon", MapServer.ROOT_ULLON);
-//        }
-//        if (params.get("lrlon") > MapServer.ROOT_LRLON) {
-//            System.out.println("OOB lrlon");
-//            params.put("lrlon", MapServer.ROOT_LRLON);
-//        }
-//        if (params.get("lrlat") < MapServer.ROOT_LRLAT) {
-//            System.out.println("OOB lrlat");
-//            params.put("lrlat", MapServer.ROOT_LRLAT);
-//        }
-//        if (params.get("ullat") > MapServer.ROOT_ULLAT) {
-//            System.out.println("OOB ullat");
-//            params.put("ullat", MapServer.ROOT_ULLAT);
-//        }
+        if (params.get("ullon") > MapServer.ROOT_LRLON
+                || params.get("lrlon") < MapServer.ROOT_ULLON
+                || params.get("lrlat") > MapServer.ROOT_ULLAT
+                || params.get("ullat") < MapServer.ROOT_LRLAT) {
+                        System.out.println("Some issue with the lat/lon");
+            results.put("query_success", false);
+            return results;
+        }
 
         int depth = getDepth(params);
 
@@ -110,9 +91,6 @@ public class Rasterer {
 
         // printGrid(renderGrid);
         System.out.println(results);
-
-        // {raster_ul_lon=-122.2998046875, depth=1, raster_lr_lon=-122.2119140625, raster_lr_lat=37.82280243352756, , raster_ul_lat=37.892195547244356, query_success=true}
-        // render_grid=[[d1_x0_y0.png, d1_x1_y0.png], [d1_x0_y1.png, d1_x1_y1.png]]
 
         return results;
     }
@@ -176,7 +154,4 @@ public class Rasterer {
         System.out.println(getLocation(-122.24053369025242, 37.87548268822065, getDepth(a))[0]);
         System.out.println(getLocation(-122.24053369025242, 37.87548268822065, getDepth(a))[1]);
     }
-
-
-
 }

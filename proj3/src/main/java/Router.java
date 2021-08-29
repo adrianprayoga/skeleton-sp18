@@ -1,7 +1,7 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This class provides a shortestPath method for finding routes between two points
@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,7 +26,77 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        class SearchNode {
+            private GraphDB.Node node;
+            private Double pqDistance;
+
+            public SearchNode(GraphDB.Node node, Double pqDistance) {
+                this.node = node;
+                this.pqDistance = pqDistance;
+            }
+        }
+
+        class SearchNodeComparator implements Comparator<SearchNode> {
+            @Override
+            public int compare(SearchNode firstNode, SearchNode secondNode) {
+                return Double.compare(firstNode.pqDistance, secondNode.pqDistance);
+            }
+        }
+
+        // Logging for initial check
+        System.out.println("stlon " + stlon + " stlat " + stlon + " destlon " + destlon + " destlat " + destlat);
+
+        Set<Long> markedNodes = new HashSet<>();
+        HashMap<Long, Double> distMap = new HashMap<>();
+        HashMap<Long, Long> searchNodeMap = new HashMap<>(); // Key -> Target Node, V -> Parent Node
+        ArrayDeque<Long> solution = new ArrayDeque<>();
+
+        PriorityQueue<SearchNode> pq = new PriorityQueue(new SearchNodeComparator());
+
+        Long sourceId = g.closest(stlon, stlat);
+        Long targetId = g.closest(destlon, destlat);
+
+
+        pq.add(new SearchNode(g.getNode(sourceId), 0.0));
+        distMap.put(sourceId, 0.0);
+        searchNodeMap.put(sourceId, null);
+
+        while(!pq.isEmpty()) {
+            SearchNode sn = pq.poll();
+            markedNodes.add(sn.node.id);
+
+            if (sn.node.id.equals(targetId)) {
+                break;
+            }
+
+            for (GraphDB.Node n : sn.node.neighbors) {
+                if (!markedNodes.contains(n.id)) {
+                    Double distanceFromParent = g.distance(sn.node.id, n.id);
+                    Double currentDistanceToNode = distMap.getOrDefault(n.id, Double.MAX_VALUE);
+
+                    // Update distance and search map if distance is closer than what was previously documented
+                    if (distMap.get(sn.node.id) + distanceFromParent < currentDistanceToNode) {
+                        distMap.put(n.id, distMap.get(sn.node.id) + distanceFromParent);
+                        searchNodeMap.put(n.id, sn.node.id);
+                    }
+
+                    Double heuristic = g.distance(n.id, targetId);
+                    pq.add(new SearchNode(n, distMap.get(n.id) + heuristic)); // dist = dist up to that point + heuristic
+                }
+            }
+        }
+
+        solution.addFirst(targetId);
+        Long prevNode = searchNodeMap.get(targetId);
+        while(prevNode != null) {
+            solution.addFirst(prevNode);
+            if (prevNode.equals(sourceId)) {
+                break;
+            }
+            prevNode = searchNodeMap.get(prevNode);
+        }
+
+        return solution.stream().collect(Collectors.toList());
     }
 
     /**
