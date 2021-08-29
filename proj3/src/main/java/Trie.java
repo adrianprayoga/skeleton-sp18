@@ -2,12 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trie {
-
-    private static String ACCEPTED_NUMS = "0123456789";
     private static String ACCEPTED_CHAR = "abcdefghijklmnopqrstuvwxyz_";
     public static int DIFF = 96;
-    public static int NUM_DIFF = 48;
-    public static int CHAR_NUM = 27 + 10;
+    public static int CHAR_NUM = 27;
     public TrieNode head;
 
     class TrieNode {
@@ -40,41 +37,37 @@ public class Trie {
     }
 
     public void addString (String word, Long nodeId) {
-        char[] chars = word.toCharArray();
+        char[] chars = getCleanString(word).toCharArray();
 
         TrieNode pointer = head;
         for(int i = 0; i < chars.length; i++) {
             int loc = charToIntConverter(chars[i]);
-            if (loc >= 0) {
-                TrieNode child = pointer.links[loc];
-                if (child == null) {
-                    pointer.links[loc] = new TrieNode(i == chars.length - 1, nodeId);
-                } else if (i == chars.length - 1) {
-                    child.setEndOfWord(true, nodeId);
-                }
-
-                pointer = pointer.links[loc];
+            TrieNode child = pointer.links[loc];
+            if (child == null) {
+                pointer.links[loc] = new TrieNode(i == chars.length - 1, nodeId);
+            } else if (i == chars.length - 1) {
+                child.setEndOfWord(true, nodeId);
             }
+
+            pointer = pointer.links[loc];
         }
     }
 
     public boolean exist (String word) {
-        char[] chars = word.toCharArray();
+        char[] chars = getCleanString(word).toCharArray();
         TrieNode pointer = head;
         for(int i = 0; i < chars.length; i++) {
             int loc = charToIntConverter(chars[i]);
-            if (loc >= 0) {
-                TrieNode child = pointer.links[loc];
-                if (child == null) {
-                    return false;
-                }
-
-                if (i == chars.length - 1) {
-                    return child.endOfWord;
-                }
-
-                pointer = pointer.links[loc];
+            TrieNode child = pointer.links[loc];
+            if (child == null) {
+                return false;
             }
+
+            if (i == chars.length - 1) {
+                return child.endOfWord;
+            }
+
+            pointer = pointer.links[loc];
         }
 
         return true;
@@ -87,18 +80,16 @@ public class Trie {
         TrieNode pointer = head;
         for(int i = 0; i < chars.length; i++) {
             int loc = charToIntConverter(chars[i]);
-            if (loc >= 0) {
-                TrieNode child = pointer.links[loc];
-                if (child == null) {
-                    return locationIds;
-                }
-
-                if (i == chars.length - 1 && child.endOfWord) {
-                    locationIds.addAll(child.locationIds);
-                }
-
-                pointer = pointer.links[loc];
+            TrieNode child = pointer.links[loc];
+            if (child == null) {
+                return locationIds;
             }
+
+            if (i == chars.length - 1 && child.endOfWord) {
+                locationIds.addAll(child.locationIds);
+            }
+
+            pointer = pointer.links[loc];
         }
 
         getAllWordsFromTrieNode(locationIds, pointer, prefix);
@@ -106,23 +97,21 @@ public class Trie {
     }
 
     public List<Long> getWordsWithExactMatch (String word) {
-        char[] chars = word.toCharArray();
+        char[] chars = getCleanString(word).toCharArray();
 
         TrieNode pointer = head;
         for(int i = 0; i < chars.length; i++) {
             int loc = charToIntConverter(chars[i]);
-            if (loc >= 0) {
-                TrieNode child = pointer.links[loc];
-                if (child == null) {
-                    return new ArrayList<>();
-                }
-
-                if (i == chars.length - 1 && child.endOfWord) {
-                    return child.locationIds;
-                }
-
-                pointer = pointer.links[loc];
+            TrieNode child = pointer.links[loc];
+            if (child == null) {
+                return new ArrayList<>();
             }
+
+            if (i == chars.length - 1 && child.endOfWord) {
+                return child.locationIds;
+            }
+
+            pointer = pointer.links[loc];
         }
 
         return new ArrayList<>();
@@ -153,26 +142,32 @@ public class Trie {
 
     // Assume that we only have a-z (lower case) and _ (underscore)
     private int charToIntConverter (Character character) {
-        if (!ACCEPTED_CHAR.contains(String.valueOf(character))
-                && !ACCEPTED_NUMS.contains(String.valueOf(character))) {
+        if (!ACCEPTED_CHAR.contains(String.valueOf(character))) {
             return -1;
         } else if (character.equals("_")) {
-            return 36;
-        } else if (ACCEPTED_NUMS.contains(String.valueOf(character))) {
-            return (int) character - NUM_DIFF;
+            return 26;
         } else {
             return (int) character - DIFF;
         }
     }
 
     private Character intToCharConverter (int i) {
-        if (i == 36) {
+        if (i == 26) {
             return '_';
-        } else if (0 <= i && i <= 9) {
-            return (char) (i + NUM_DIFF);
         } else {
             return (char) (i + DIFF);
         }
+    }
+
+    private String getCleanString(String string) {
+        String s = "";
+        for (char c : string.toCharArray()) {
+            if (ACCEPTED_CHAR.contains(String.valueOf(c))) {
+                s += c;
+            }
+        }
+
+        return s;
     }
 
 //    public static void main(String[] args) {
@@ -182,6 +177,8 @@ public class Trie {
 //        a.addString("d'angelo", 3L);
 //        a.addString("brazil cafe", 4L);
 //        a.addString("forever 21", 5L);
+//        a.addString("molly b.", 6L);
+//        a.addString("9th & Harrison (Tileshop)", 7L);
 //
 //        System.out.println(a.exist("tes"));
 //        System.out.println(a.exist("t"));
@@ -189,13 +186,15 @@ public class Trie {
 //        System.out.println(a.exist("s"));
 //
 //        System.out.println(a.getAllWords());
-//        System.out.println(a.getWordsWithPrefix("s"));
-//        System.out.println(a.getWordsWithPrefix("tes"));
-//        System.out.println(a.getWordsWithPrefix("tesl"));
-//        System.out.println(a.getWordsWithPrefix("tesla"));
-//        System.out.println(a.getWordsWithPrefix("teslaw"));
-//        System.out.println(a.getWordsWithPrefix("da"));
-//        System.out.println(a.getWordsWithPrefix("fo"));
+//        System.out.println(a.getWordsWithPrefix("s") + " []");
+//        System.out.println(a.getWordsWithPrefix("tes") + " [1, 2]");
+//        System.out.println(a.getWordsWithPrefix("tesl") + " [2]");
+//        System.out.println(a.getWordsWithPrefix("tesla") + " [2]");
+//        System.out.println(a.getWordsWithPrefix("teslaw") + " []");
+//        System.out.println(a.getWordsWithPrefix("da") + " [3]");
+//        System.out.println(a.getWordsWithPrefix("fo") + " [5]");
+//        System.out.println(a.getWordsWithPrefix("mo") + " [6]");
+//        System.out.println(a.getWordsWithPrefix("th") + " [7]");
 //
 //    }
 }
