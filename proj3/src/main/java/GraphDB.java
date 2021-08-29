@@ -23,8 +23,9 @@ public class GraphDB {
      * creating helper classes, e.g. Node, Edge, etc. */
 
     Map<Long, Node> nodes = new HashMap<>();
-    Set<Long> usedNodesId = new HashSet<>();
+    Map<Long, Node> locationNodes = new HashMap<>();
     Map<Long, Edge> edges = new HashMap<>();
+    Trie locationNames = new Trie();
 
     static class Node {
         List<Node> neighbors = new ArrayList<>(); // Long (id of node)
@@ -103,6 +104,11 @@ public class GraphDB {
 
     void addEdges (Long id, Edge edge) {
         this.edges.put(id, edge);
+    }
+
+    void addLocation (Long id, String name, Node node) {
+        this.locationNodes.put(id, node);
+        this.locationNames.addString(name, id);
     }
 
     /**

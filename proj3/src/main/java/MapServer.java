@@ -4,15 +4,11 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 
 /* Maven is used to pull in these dependencies. */
@@ -152,6 +148,8 @@ public class MapServer {
         get("/search", (req, res) -> {
             Set<String> reqParams = req.queryParams();
             String term = req.queryParams("term");
+
+            System.out.println("reqParams " + reqParams + " " + term);
             Gson gson = new Gson();
             /* Search for actual location data. */
             if (reqParams.contains("full")) {
@@ -285,7 +283,11 @@ public class MapServer {
      * cleaned <code>prefix</code>.
      */
     public static List<String> getLocationsByPrefix(String prefix) {
-        return new LinkedList<>();
+        List<Long> ids = graph.locationNames.getWordsWithPrefix(prefix);
+        return ids.stream().map(locationId -> graph.locationNodes.get(locationId))
+                .filter(Objects::nonNull)
+                .map(node -> node.name)
+                .collect(Collectors.toList());
     }
 
     /**

@@ -95,13 +95,6 @@ public class GraphBuildingHandler extends DefaultHandler {
                 connectedNodes.addLast(n);
             }
 
-            /* TODO Use the above id to make "possible" connections between the nodes in this way */
-            /* Hint1: It would be useful to remember what was the last node in this way. */
-            /* Hint2: Not all ways are valid. So, directly connecting the nodes here would be
-            cumbersome since you might have to remove the connections if you later see a tag that
-            makes this way invalid. Instead, think of keeping a list of possible connections and
-            remember whether this way is valid or not. */
-
         } else if (activeState.equals("way") && qName.equals("tag")) {
             /* While looking at a way, we found a <tag...> tag. */
             String k = attributes.getValue("k");
@@ -121,11 +114,7 @@ public class GraphBuildingHandler extends DefaultHandler {
         } else if (activeState.equals("node") && qName.equals("tag") && attributes.getValue("k")
                 .equals("name")) {
             currentNode.setName(attributes.getValue("v"));
-            /* While looking at a node, we found a <tag...> with k="name". */
-            /* TODO Create a location. */
-            /* Hint: Since we found this <tag...> INSIDE a node, we should probably remember which
-            node this tag belongs to. Remember XML is parsed top-to-bottom, so probably it's the
-            last node that you looked at (check the first if-case). */
+            g.addLocation(currentNode.id, attributes.getValue("v").toLowerCase(Locale.ROOT), currentNode);
         }
     }
 
