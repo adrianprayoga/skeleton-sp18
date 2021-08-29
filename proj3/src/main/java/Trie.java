@@ -1,8 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Trie {
-    private static String ACCEPTED_CHAR = "abcdefghijklmnopqrstuvwxyz_";
+    private static String ACCEPTED_CHAR = "abcdefghijklmnopqrstuvwxyz ";
     public static int DIFF = 96;
     public static int CHAR_NUM = 27;
     public TrieNode head;
@@ -140,11 +141,9 @@ public class Trie {
         }
     }
 
-    // Assume that we only have a-z (lower case) and _ (underscore)
+    // Assume that we only have a-z (lower case) and ( ) (space)
     private int charToIntConverter (Character character) {
-        if (!ACCEPTED_CHAR.contains(String.valueOf(character))) {
-            return -1;
-        } else if (character.equals("_")) {
+        if (character.equals(' ')) {
             return 26;
         } else {
             return (int) character - DIFF;
@@ -153,7 +152,7 @@ public class Trie {
 
     private Character intToCharConverter (int i) {
         if (i == 26) {
-            return '_';
+            return ' ';
         } else {
             return (char) (i + DIFF);
         }
@@ -161,7 +160,7 @@ public class Trie {
 
     private String getCleanString(String string) {
         String s = "";
-        for (char c : string.toCharArray()) {
+        for (char c : string.toLowerCase(Locale.ROOT).toCharArray()) {
             if (ACCEPTED_CHAR.contains(String.valueOf(c))) {
                 s += c;
             }
@@ -179,6 +178,9 @@ public class Trie {
 //        a.addString("forever 21", 5L);
 //        a.addString("molly b.", 6L);
 //        a.addString("9th & Harrison (Tileshop)", 7L);
+//        a.addString("PetFood Express", 8L);
+//        a.addString("Pet Food Express", 9L);
+//
 //
 //        System.out.println(a.exist("tes"));
 //        System.out.println(a.exist("t"));
@@ -195,6 +197,9 @@ public class Trie {
 //        System.out.println(a.getWordsWithPrefix("fo") + " [5]");
 //        System.out.println(a.getWordsWithPrefix("mo") + " [6]");
 //        System.out.println(a.getWordsWithPrefix("th") + " [7]");
-//
+//        System.out.println(a.getWordsWithPrefix("br") + " [4]");
+//        System.out.println(a.getWordsWithPrefix("pet") + " [8, 9]");
+//        System.out.println(a.getWordsWithPrefix("pet food") + " [9]");
+//        System.out.println(a.getWordsWithExactMatch("pet food express") + " [9]");
 //    }
 }
