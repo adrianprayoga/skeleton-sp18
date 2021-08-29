@@ -69,19 +69,19 @@ public class Router {
                 break;
             }
 
-            for (GraphDB.Node n : sn.node.neighbors) {
-                if (!markedNodes.contains(n.id)) {
-                    Double distanceFromParent = g.distance(sn.node.id, n.id);
-                    Double currentDistanceToNode = distMap.getOrDefault(n.id, Double.MAX_VALUE);
+            for (GraphDB.Node neighbor : sn.node.neighbors) {
+                if (!markedNodes.contains(neighbor.id)) {
+                    Double distanceFromParent = g.distance(sn.node.id, neighbor.id);
+                    Double currentDistanceToNode = distMap.getOrDefault(neighbor.id, Double.MAX_VALUE);
 
                     // Update distance and search map if distance is closer than what was previously documented
                     if (distMap.get(sn.node.id) + distanceFromParent < currentDistanceToNode) {
-                        distMap.put(n.id, distMap.get(sn.node.id) + distanceFromParent);
-                        searchNodeMap.put(n.id, sn.node.id);
-                    }
+                        distMap.put(neighbor.id, distMap.get(sn.node.id) + distanceFromParent);
+                        searchNodeMap.put(neighbor.id, sn.node.id);
 
-                    Double heuristic = g.distance(n.id, targetId);
-                    pq.add(new SearchNode(n, distMap.get(n.id) + heuristic)); // dist = dist up to that point + heuristic
+                        Double heuristic = g.distance(neighbor.id, targetId);
+                        pq.add(new SearchNode(neighbor, distMap.get(neighbor.id) + heuristic)); // dist = dist up to that point + heuristic
+                    }
                 }
             }
         }
