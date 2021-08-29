@@ -3,9 +3,11 @@ import java.util.List;
 
 public class Trie {
 
+    private static String ACCEPTED_NUMS = "0123456789";
     private static String ACCEPTED_CHAR = "abcdefghijklmnopqrstuvwxyz_";
     public static int DIFF = 96;
-    public static int CHAR_NUM = 27;
+    public static int NUM_DIFF = 48;
+    public static int CHAR_NUM = 27 + 10;
     public TrieNode head;
 
     class TrieNode {
@@ -151,18 +153,23 @@ public class Trie {
 
     // Assume that we only have a-z (lower case) and _ (underscore)
     private int charToIntConverter (Character character) {
-        if (!ACCEPTED_CHAR.contains(String.valueOf(character))) {
+        if (!ACCEPTED_CHAR.contains(String.valueOf(character))
+                && !ACCEPTED_NUMS.contains(String.valueOf(character))) {
             return -1;
         } else if (character.equals("_")) {
-            return 0;
+            return 36;
+        } else if (ACCEPTED_NUMS.contains(String.valueOf(character))) {
+            return (int) character - NUM_DIFF;
         } else {
             return (int) character - DIFF;
         }
     }
 
     private Character intToCharConverter (int i) {
-        if (i == 0) {
+        if (i == 36) {
             return '_';
+        } else if (0 <= i && i <= 9) {
+            return (char) (i + NUM_DIFF);
         } else {
             return (char) (i + DIFF);
         }
@@ -173,6 +180,8 @@ public class Trie {
 //        a.addString("testing", 1L);
 //        a.addString("tesla", 2L);
 //        a.addString("d'angelo", 3L);
+//        a.addString("brazil cafe", 4L);
+//        a.addString("forever 21", 5L);
 //
 //        System.out.println(a.exist("tes"));
 //        System.out.println(a.exist("t"));
@@ -186,5 +195,7 @@ public class Trie {
 //        System.out.println(a.getWordsWithPrefix("tesla"));
 //        System.out.println(a.getWordsWithPrefix("teslaw"));
 //        System.out.println(a.getWordsWithPrefix("da"));
+//        System.out.println(a.getWordsWithPrefix("fo"));
+//
 //    }
 }
