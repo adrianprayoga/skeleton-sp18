@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public class Trie {
     private static String ACCEPTED_CHAR = "abcdefghijklmnopqrstuvwxyz ";
-    public static int DIFF = 96;
+    public static int DIFF = 97;
     public static int CHAR_NUM = 27;
     public TrieNode head;
 
@@ -41,6 +41,11 @@ public class Trie {
         char[] chars = getCleanString(word).toCharArray();
 
         TrieNode pointer = head;
+
+        if (chars.length == 0) {
+            pointer.locationIds.add(nodeId);
+        }
+
         for(int i = 0; i < chars.length; i++) {
             int loc = charToIntConverter(chars[i]);
             TrieNode child = pointer.links[loc];
@@ -57,6 +62,7 @@ public class Trie {
     public boolean exist (String word) {
         char[] chars = getCleanString(word).toCharArray();
         TrieNode pointer = head;
+
         for(int i = 0; i < chars.length; i++) {
             int loc = charToIntConverter(chars[i]);
             TrieNode child = pointer.links[loc];
@@ -101,6 +107,11 @@ public class Trie {
         char[] chars = getCleanString(word).toCharArray();
 
         TrieNode pointer = head;
+
+        if (chars.length == 0) {
+            return pointer.locationIds;
+        }
+
         for(int i = 0; i < chars.length; i++) {
             int loc = charToIntConverter(chars[i]);
             TrieNode child = pointer.links[loc];
@@ -180,7 +191,9 @@ public class Trie {
 //        a.addString("9th & Harrison (Tileshop)", 7L);
 //        a.addString("PetFood Express", 8L);
 //        a.addString("Pet Food Express", 9L);
-//
+//        a.addString("99 cent store", 10L);
+//        a.addString("Zoo", 11L);
+//        a.addString("", 12L);
 //
 //        System.out.println(a.exist("tes"));
 //        System.out.println(a.exist("t"));
@@ -200,6 +213,8 @@ public class Trie {
 //        System.out.println(a.getWordsWithPrefix("br") + " [4]");
 //        System.out.println(a.getWordsWithPrefix("pet") + " [8, 9]");
 //        System.out.println(a.getWordsWithPrefix("pet food") + " [9]");
+//        System.out.println(a.getWordsWithPrefix("z") + " [11]");
+//        System.out.println(a.getWordsWithExactMatch("") + " [12]");
 //        System.out.println(a.getWordsWithExactMatch("pet food express") + " [9]");
 //    }
 }
